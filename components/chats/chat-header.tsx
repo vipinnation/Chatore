@@ -37,7 +37,7 @@ const ChatHeader: React.FunctionComponent<ChatHeaderProps> = ({ name }) => {
     <div className="container w-full">
       <React.Fragment key={anchor}>
         <span onClick={toggleDrawer(anchor, true)} className="cursor-pointer">
-          <AvatarComponent name={"name"} />
+          <AvatarComponent name={name} />
         </span>
         <Drawer
           anchor={anchor}

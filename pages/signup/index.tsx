@@ -5,7 +5,9 @@ import LoadingButton from "@mui/lab/LoadingButton";
 import AlertComponent from "../../components/alert";
 import Link from "next/link";
 import { signup } from "../../utils/api_url";
-import { headers } from "../../utils/config";
+import { getClientHeaders } from "../../utils/config";
+import { getCookie } from "cookies-next";
+import { GetServerSideProps } from "next";
 
 const SignUp = () => {
   const [user, setUser] = useState({
@@ -45,8 +47,15 @@ const SignUp = () => {
           message: "Password should be of 6 characters",
         });
       } else {
-        let res = await axios.post(`${signup}`, user, headers);
+        let res = await axios.post(`${signup}`, user, {headers: getClientHeaders});
         setError({ type: "SUCCESS", message: res.data.msg });
+        setUser({
+          firstName: "",
+          lastName: "",
+          email: "",
+          password: "",
+          confirmPassword: "",
+        })
       }
     } catch (error: any) {
       console.log("error ", error);
@@ -164,6 +173,24 @@ const SignUp = () => {
       </div>
     </div>
   );
+};
+
+export const getServerSideProps: GetServerSideProps = async (context: any) => {
+  try {
+    let token = getCookie("auth-token", context);
+    if (token) {
+      return {
+        redirect: {
+          permanent: false,
+          destination: "/chats",
+        },
+        props: {},
+      };
+    }
+    return { props: {} };
+  } catch (error) {
+    return { props: {} };
+  }
 };
 
 export default SignUp;

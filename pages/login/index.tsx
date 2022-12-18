@@ -9,8 +9,8 @@ import FormControlLabel from "@mui/material/FormControlLabel";
 import Checkbox from "@mui/material/Checkbox";
 import axios from "axios";
 import { login } from "../../utils/api_url";
-import { headers } from "../../utils/config";
-import { setCookie } from "cookies-next";
+import { setCookie, getCookie } from "cookies-next";
+import { GetServerSideProps } from "next";
 
 const Login = () => {
   const router = useRouter();
@@ -34,23 +34,29 @@ const Login = () => {
 
       if (!email.trim() && !password.trim()) {
         setError({ type: "WARNING", message: "All Field Required" });
+        setIsLoader(false);
       } else if (!email.trim()) {
         setError({ type: "WARNING", message: "Email is required" });
+        setIsLoader(false);
       } else if (!password.trim()) {
         setError({ type: "WARNING", message: "Password is required" });
+        setIsLoader(false);
       } else {
         let res = await axios.post(`${login}`, user, {
           headers: { "Content-Type": "application/json" },
         });
         setCookie("auth-token", res.data.token);
+        setCookie("user-id", res.data._id);
+        setCookie("username", `${res.data.firstName} ${res.data.lastName}`);
+        setIsLoader(false);
         router.push("/chats");
       }
     } catch (error: any) {
       console.log("Login Page Error ", error);
       setError({ type: "ERROR", message: error?.response?.data?.msg });
+      setIsLoader(false);
     }
     removeNotification();
-    setIsLoader(false);
   };
 
   const removeNotification = () => {
@@ -120,7 +126,7 @@ const Login = () => {
           </form>
           <div className="text-center pt-12 pb-12">
             <p>
-              Don't have an account?
+              Don&apos;t have an account?
               <Link href="/signup">
                 <span className="underline px-2">Register here.</span>
               </Link>
@@ -130,6 +136,24 @@ const Login = () => {
       </div>
     </div>
   );
+};
+
+export const getServerSideProps: GetServerSideProps = async (context: any) => {
+  try {
+    let token = getCookie("auth-token", context);
+    if (token) {
+      return {
+        redirect: {
+          permanent: false,
+          destination: "/chats",
+        },
+        props: {},
+      };
+    }
+    return { props: {} };
+  } catch (error) {
+    return { props: {} };
+  }
 };
 
 export default Login;

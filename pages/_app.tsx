@@ -12,6 +12,7 @@ export default function App({ Component, pageProps }: AppProps) {
         <meta name="description" content="A Chat application" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
+      <div className="pt-16"></div>
       <Component {...pageProps} />
     </>
   );

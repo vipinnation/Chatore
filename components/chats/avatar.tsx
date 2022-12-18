@@ -32,7 +32,7 @@ const StyledBadge = styled(Badge)(({ theme }) => ({
   },
 }));
 
-type AvtarProps = { name: string };
+type AvtarProps = { name: string; className?: string };
 
 function stringToColor(string: string) {
   let hash = 0;
@@ -54,10 +54,13 @@ function stringToColor(string: string) {
   return color;
 }
 
-const AvatarComponent: React.FunctionComponent<AvtarProps> = ({ name }) => {
+const AvatarComponent: React.FunctionComponent<AvtarProps> = ({
+  name,
+  className,
+}) => {
   return (
     <>
-      <span className="flex items-center">
+      <span className={`flex items-center `}>
         <StyledBadge
           overlap="circular"
           anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
@@ -65,7 +68,7 @@ const AvatarComponent: React.FunctionComponent<AvtarProps> = ({ name }) => {
         >
           <Avatar src="/static/images/avatar/1.jpg" />
         </StyledBadge>
-        <div className="ml-2 text-sm font-semibold">{name}</div>
+        <div className="ml-2 text-sm font-semibold capitalize">{name}</div>
       </span>
     </>
   );

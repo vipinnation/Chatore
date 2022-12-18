@@ -1,8 +1,8 @@
-const headers = {
-  headers: {
-    "Content-Type": "application/json",
-    // Authorization: "Token " + localStorage.getItem("auth-token"),
-  },
+import { getCookie } from "cookies-next";
+
+const getClientHeaders = {
+  "Content-Type": "application/json",
+  Authorization: `Token ${getCookie("auth-token")}`,
 };
 
-export { headers };
+export { getClientHeaders };

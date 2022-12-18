@@ -1,6 +1,32 @@
-import React from "react";
+import axios from "axios";
+import React, { useState } from "react";
+import { message } from "../../utils/api_url";
+import { getClientHeaders } from "../../utils/config";
 
-const TypeMessage = () => {
+type TypeMessageProps = { chat_id?: string };
+
+const TypeMessage: React.FunctionComponent<TypeMessageProps> = ({
+  chat_id,
+}) => {
+  const [content, setContent] = useState<string>("");
+
+  const sendMessage = async () => {
+    try {
+      console.log("SEND MESSAGE");
+      let res = await axios.post(
+        `${message.send_message}`,
+        {
+          chat_id: chat_id,
+          content,
+        },
+        { headers: getClientHeaders }
+      );
+      console.log(res.data);
+    } catch (error: any) {
+      console.log(error);
+    }
+  };
+
   return (
     <>
       <div className="my-6"></div>
@@ -31,6 +57,10 @@ const TypeMessage = () => {
             <input
               type="text"
               className="flex w-full border rounded-xl focus:outline-none focus:border-indigo-300 pl-4 h-10"
+              value={content}
+              onChange={(e) => {
+                setContent(e.target.value);
+              }}
             />
             <button className="absolute flex items-center justify-center h-full w-12 right-0 top-0 text-gray-400 hover:text-gray-600">
               <svg
@@ -51,7 +81,10 @@ const TypeMessage = () => {
           </div>
         </div>
         <div className="ml-4">
-          <button className="flex items-center justify-center bg-indigo-500 hover:bg-indigo-600 rounded-xl text-white px-4 py-1 flex-shrink-0">
+          <button
+            onClick={sendMessage}
+            className="flex items-center justify-center bg-indigo-500 hover:bg-indigo-600 rounded-xl text-white px-4 py-1 flex-shrink-0"
+          >
             <span>Send</span>
             <span className="ml-2">
               <svg
