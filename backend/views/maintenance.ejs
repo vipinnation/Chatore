@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Maintenance Mode</title>
+    <link href="https://fonts.googleapis.com/css?family=Roboto:400,700&display=swap" rel="stylesheet" />
+    <style>
+      body {
+        font-family: 'Roboto', Arial, sans-serif;
+        background-color: #f0f0f0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        margin: 0;
+      }
+
+      .maintenance-container {
+        max-width: 500px;
+        text-align: center;
+        padding: 40px;
+        border-radius: 8px;
+        box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+        background-color: #fff;
+      }
+
+      .maintenance-icon {
+        font-size: 80px;
+        color: #ff5733;
+        margin-bottom: 20px;
+      }
+
+      h1 {
+        font-size: 36px;
+        color: #333;
+        margin-bottom: 10px;
+      }
+
+      p {
+        font-size: 18px;
+        color: #555;
+        margin-bottom: 30px;
+      }
+
+      .maintenance-timing {
+        font-size: 16px;
+        color: #777;
+        margin-bottom: 20px;
+      }
+
+      .cta-button {
+        display: inline-block;
+        background-color: #ff5733;
+        color: #fff;
+        padding: 10px 20px;
+        border-radius: 4px;
+        text-decoration: none;
+        font-weight: bold;
+        transition: background-color 0.3s ease;
+      }
+
+      .cta-button:hover {
+        background-color: #ff784e;
+      }
+
+      .powered-by {
+        font-size: 14px;
+        color: #888;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="maintenance-container">
+      <i class="maintenance-icon">🔧</i>
+      <h1>Maintenance Mode</h1>
+      <p>The server is currently under maintenance. Please try again later.</p>
+      <p class="maintenance-timing">Expected back online: 15th July 2023, 10:00 AM (UTC)</p>
+      <a href="/" class="cta-button">Back to Home</a>
+      <p class="powered-by">Powered by Graphical</p>
+    </div>
+  </body>
+</html>

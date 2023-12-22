@@ -1,0 +1,54 @@
+{
+  "name": "graphical",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "scripts": {
+    "start": "NODE_ENV=DEV node build/bundle.server.js",
+    "build": "rm -rf build && npx webpack",
+    "dev": "concurrently \"npx tsc -w\" \"nodemon dist/server.js\"",
+    "build:dev": "rm -rf dist && rm -rf build && npx tsc && npm run move-files",
+    "test": "jest --watch",
+    "lint": "eslint --fix --ext .ts",
+    "move-files": "sh files.sh",
+    "local": "docker-compose -f .docker/docker-compose-local.yml up",
+    "develop": "docker-compose -f .docker/docker-compose-dev.yml up",
+    "prod": "docker-compose -f .docker/docker-compose-prod.yml up"
+  },
+  "author": "Vipin Meghwal",
+  "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/vipinnation/Graphical.git"
+  },
+  "devDependencies": {
+    "@types/bcrypt": "^5.0.0",
+    "@types/cors": "^2.8.13",
+    "@types/express": "^4.17.17",
+    "@types/jsonwebtoken": "^9.0.2",
+    "@types/morgan": "^1.9.4",
+    "@types/webpack-node-externals": "^3.0.0",
+    "concurrently": "^8.2.0",
+    "copy-webpack-plugin": "^11.0.0",
+    "express": "^4.18.2",
+    "i": "^0.3.7",
+    "nodemon": "^3.0.1",
+    "npm": "^9.8.1",
+    "ts-loader": "^9.4.4",
+    "typescript": "^5.1.6",
+    "webpack": "^5.88.2",
+    "webpack-cli": "^5.1.4",
+    "webpack-node-externals": "^3.0.0"
+  },
+  "dependencies": {
+    "bcrypt": "^5.1.0",
+    "cors": "^2.8.5",
+    "dotenv": "^16.3.1",
+    "ejs": "^3.1.9",
+    "joi": "^17.11.0",
+    "jsonwebtoken": "^9.0.1",
+    "mongoose": "^7.4.2",
+    "morgan": "^1.10.0",
+    "redis": "^4.6.12"
+  }
+}

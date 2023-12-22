@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Oops! Something went wrong</title>
+    <style>
+      body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        margin: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        background-color: #e3f6ff;
+        background-size: cover;
+        background-position: center;
+        overflow: hidden;
+      }
+      .stars {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        top: 0;
+        left: 0;
+        pointer-events: none;
+      }
+      .star {
+        position: absolute;
+        width: 0;
+        height: 0;
+        border-left: 10px solid transparent;
+        border-right: 10px solid transparent;
+        border-bottom: 20px solid #fff;
+        opacity: 0.6;
+        animation: twinkling 8s infinite;
+      }
+      .star:nth-child(1) {
+        top: 20%;
+        left: 20%;
+      }
+      .star:nth-child(2) {
+        top: 30%;
+        left: 70%;
+        animation-delay: 1s;
+      }
+      .star:nth-child(3) {
+        top: 40%;
+        left: 45%;
+        animation-delay: 2s;
+      }
+      /* Add more star elements and adjust positions as desired */
+      /* Stars set 2 */
+      .star:nth-child(4) {
+        top: 50%;
+        left: 80%;
+        animation-delay: 3s;
+      }
+      .star:nth-child(5) {
+        top: 60%;
+        left: 15%;
+        animation-delay: 1s;
+      }
+      .star:nth-child(6) {
+        top: 70%;
+        left: 40%;
+        animation-delay: 2s;
+      }
+      /* Add more stars and adjust animation-delay as needed */
+
+      @keyframes twinkling {
+        0%,
+        100% {
+          opacity: 0;
+        }
+        50% {
+          opacity: 0.6;
+        }
+      }
+
+      /* Rest of the CSS styling from the previous version */
+      .error-container {
+        text-align: center;
+        color: #fff;
+      }
+      .error-heading {
+        font-size: 36px;
+        color: #e74c3c;
+        margin-bottom: 10px;
+      }
+      .error-message {
+        font-size: 24px;
+        color: #27374d;
+        margin-bottom: 20px;
+      }
+      .error-description {
+        font-size: 18px;
+        color: #27374d;
+        margin-bottom: 40px;
+      }
+      .go-home-link {
+        font-size: 18px;
+        color: #007bff;
+        text-decoration: none;
+      }
+      .go-home-link:hover {
+        text-decoration: underline;
+      }
+      .error-icon {
+        font-size: 80px;
+        color: #e74c3c;
+        margin-bottom: 20px;
+      }
+      .error-container {
+        background-color: #f6f1e9;
+        border-radius: 8px;
+        padding: 30px;
+        box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.1);
+      }
+    </style>
+  </head>
+  <body>
+    <div class="stars">
+      <div class="star"></div>
+      <div class="star"></div>
+      <div class="star"></div>
+      <div class="star"></div>
+      <div class="star"></div>
+      <div class="star"></div>
+      <!-- Add more star elements as desired -->
+    </div>
+    <div class="error-container">
+      <div class="error-icon">⚠️</div>
+      <div class="error-heading">Oops! Something went wrong</div>
+      <div class="error-message">We apologize for the inconvenience.</div>
+      <div class="error-description">
+        Our server is currently experiencing difficulties, and we are working to resolve the issue.
+      </div>
+      <div class="error-description">Please try again later or contact our support team for assistance.</div>
+      <a href="/" class="go-home-link">Go back to the homepage</a>
+    </div>
+  </body>
+</html>
