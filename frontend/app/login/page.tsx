@@ -12,6 +12,7 @@ import { useForm } from "react-hook-form";
 import InputField from "@/components/forms/input.component";
 import { FaEye } from "react-icons/fa";
 import { FaEyeSlash } from "react-icons/fa6";
+import Image from "next/image";
 
 const LoginPage = () => {
   const [isPassword, setIsPassword] = useState<boolean>(true);
@@ -29,7 +30,7 @@ const LoginPage = () => {
   return (
     <div className="w-full flex flex-wrap">
       <div className="w-1/2 shadow-2xl">
-        <img
+        <Image alt="loginpage"
           className="object-cover w-full h-screen hidden md:block"
           src="https://source.unsplash.com/IXUM4cJynP0"
         />

@@ -2,6 +2,7 @@
 import InputField from "@/components/forms/input.component";
 import { LoadingButton } from "@mui/lab";
 import { InputAdornment, TextField } from "@mui/material";
+import Image from "next/image";
 import Link from "next/link";
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
@@ -30,10 +31,10 @@ const SignupPage = () => {
   return (
     <div className="w-full flex flex-wrap">
       <div className="w-1/2 shadow-2xl">
-        <img
+        <Image
           className="object-cover w-full h-screen hidden md:block"
           src="https://source.unsplash.com/IXUM4cJynP0"
-          alt="Background"
+          alt="SignUp Page"
         />
       </div>
       <div className="w-full md:w-1/2 flex flex-col pt-12">

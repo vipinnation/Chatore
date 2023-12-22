@@ -1,5 +1,6 @@
 "use client";
 import { Drawer, Box } from "@mui/material";
+import Image from "next/image";
 import React, { useState } from "react";
 import AvatarComponent from "./avatar.component";
 
@@ -30,7 +31,7 @@ const ChatHeader = (props: Props) => {
           >
             <div className="flex flex-col items-center bg-indigo-100 border border-gray-200  py-6 w-full  px-4 rounded-lg">
               <div className="h-20 w-20 rounded-full border overflow-hidden">
-                <img
+                <Image
                   src="https://avatars3.githubusercontent.com/u/2763884?s=128"
                   alt="Avatar"
                   className="h-full w-full"
