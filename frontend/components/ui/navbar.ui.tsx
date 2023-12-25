@@ -1,19 +1,20 @@
 import React from "react";
+import Link from "next/link";
 
 type Props = {};
 
 const Navbar = (props: Props) => {
   return (
-    <section className="p-5 bg-primary text-white shadow-md fixed w-full">
+    <section className="p-5 bg-primary text-white shadow-md fixed w-full z-50">
       <div className="container mx-auto flex justify-between items-center">
-        <a
+        <Link
           href="/"
           className="transition ease-in-out duration-150 hover:line-through"
         >
           <span className="self-center text-xl font-semibold whitespace-nowrap dark:text-white cursor-pointer">
             ChatOre
           </span>
-        </a>
+        </Link>
         <div>
           <button id="toggle-menu-button" className="z-50 md:hidden relative">
             <span className="sr-only">Toggle Menu</span>
@@ -39,29 +40,29 @@ const Navbar = (props: Props) => {
           >
             <ul className="flex flex-col gap-y-7 md:flex-row md:gap-2">
               <li className="md:border-r md:px-4 md:border-red-200">
-                <a
+                <Link
                   href="/"
                   className="transition ease-in-out duration-150 hover:line-through"
                 >
                   Home
-                </a>
+                </Link>
               </li>
 
               <li className="md:border-r md:px-4 md:border-red-200">
-                <a
+                <Link
                   href=""
                   className="transition ease-in-out duration-150 hover:line-through"
                 >
                   Abous us
-                </a>
+                </Link>
               </li>
               <li className="md:px-4">
-                <a
+                <Link
                   href=""
                   className="transition ease-in-out duration-150 hover:line-through"
                 >
                   Contact us
-                </a>
+                </Link>
               </li>
             </ul>
           </div>

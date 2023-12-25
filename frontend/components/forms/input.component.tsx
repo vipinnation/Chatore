@@ -36,7 +36,7 @@ const InputField: React.FC<Props> = ({
         autoComplete="off"
         sx={{
           "&.:after": {
-            borderBottom: "2px solid yellow", // Set the color for ::after pseudo-element
+            borderBottom: "2px solid yellow", // Set the color for ::after pseudo-conso
           },
           ...(isError
             ? {
@@ -52,7 +52,6 @@ const InputField: React.FC<Props> = ({
         }}
       />
 
-      {console.log(errors) as any}
       {errors && errors.type == "required" ? (
         <FormHelperText>
           <p className="text-red-600">
