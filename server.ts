@@ -41,7 +41,7 @@ server.listen(port, () => {
 process.on('SIGINT', async () => {
     server.close(async () => {
         await db.connection.close();
-        await redis.quit();
+        // await redis.quit();
         process.exit(0);
     });
 });
@@ -49,7 +49,7 @@ process.on('SIGINT', async () => {
 process.on('SIGTERM', async () => {
     server.close(async () => {
         await db.connection.close();
-        await redis.quit();
+        // await redis.quit();
         process.exit(0);
     });
 

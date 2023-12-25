@@ -12,7 +12,7 @@ const saveUser = (body: any) => {
             });
 
             let savedUser = await user.save();
-            resolve({ msg: "User saved successfully", user: savedUser });
+            resolve({ msg: "User registered successfully", user: savedUser });
         } catch (error: any) {
             if (error.code == "11000") {
                 reject({ msg: "User is already registered with this email" });

@@ -21,7 +21,7 @@
 # rsync -av  "$src_dir/" "$dest_dir/"
 
 
-# views_dir="./views"
-# views_dest_dir="./dist/views"
+views_dir="./views"
+views_dest_dir="./dist/views"
 
-# cp -r  "$views_dir/" "$views_dest_dir/"
+cp -r  "$views_dir/" "$views_dest_dir/"

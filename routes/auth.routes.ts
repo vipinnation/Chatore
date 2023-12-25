@@ -7,7 +7,7 @@ const routes = express.Router();
 
 
 routes.post("/signup", BodyValidator(signupValidator), AuthController.signup)
-routes.post("/signin", BodyValidator(loginValidator), AuthController.login)
+routes.post("/login", BodyValidator(loginValidator), AuthController.login)
 routes.post("/forgot-password", AuthController.forgotPassword)
 
 export const authRoutes = routes;
