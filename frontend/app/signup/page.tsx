@@ -1,15 +1,18 @@
-"use client";
-import InputField from "@/components/forms/input.component";
-import { AuthAPI } from "@/services/api-calls/auth.api-calls";
-import { LoadingButton } from "@mui/lab";
-import { InputAdornment, TextField } from "@mui/material";
-import Image from "next/image";
-import Link from "next/link";
-import React, { useState } from "react";
-import { useForm } from "react-hook-form";
-import { FaEye, FaEyeSlash } from "react-icons/fa";
+'use client';
+import { useSnackbar } from '@/components/alert/alert.context';
+import InputField from '@/components/forms/input.component';
+import { AuthAPI } from '@/services/api-calls/auth.api-calls';
+import { LoadingButton } from '@mui/lab';
+import { InputAdornment } from '@mui/material';
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import React, { useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { FaEye, FaEyeSlash } from 'react-icons/fa';
 
 const SignupPage = () => {
+  const router = useRouter();
+  const { toastMessage } = useSnackbar();
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isPassword, setIsPassword] = useState<boolean>(true);
   const [isConfirmPassword, setIsConfirmPassword] = useState<boolean>(true);
@@ -18,20 +21,25 @@ const SignupPage = () => {
     handleSubmit,
     register,
     formState: { errors },
-    watch,
+    watch
   } = useForm();
 
-  const password = watch("password", "");
-  const confirmPassword = watch("confirm_password", "");
+  const confirmPassword = watch('confirm_password', '');
+  const password = watch('password', '');
 
   const submitHandler = async (user: any) => {
     try {
       setIsLoading((_prev) => true);
       let { confirm_password, ...rest } = user;
       let data = await AuthAPI.registration(rest);
+      toastMessage(data.msg, 'success');
       setIsLoading((_prev) => false);
+      setTimeout(() => {
+        router.push('/login');
+      }, 2000);
     } catch (error) {
-      console.log(error);
+      console.log('API ERRO ', error);
+      toastMessage(error, 'error');
       setIsLoading((_prev) => false);
     }
   };
@@ -47,13 +55,8 @@ const SignupPage = () => {
       </div>
       <div className="w-full md:w-1/2 flex flex-col pt-16 sm:pt-12 ">
         <div className="flex flex-col justify-center md:justify-start my-auto pt-8 md:pt-0 px-8 md:px-24 lg:px-32">
-          <p className="text-center text-3xl">
-            Create you account and start chatting.
-          </p>
-          <form
-            className="flex flex-col pt-1 md:pt-8"
-            onSubmit={handleSubmit(submitHandler)}
-          >
+          <p className="text-center text-3xl">Create you account and start chatting.</p>
+          <form className="flex flex-col pt-1 md:pt-8" onSubmit={handleSubmit(submitHandler)}>
             {/* Full name  */}
             <div className="flex flex-col pt-4">
               <InputField
@@ -63,9 +66,9 @@ const SignupPage = () => {
                 name="full_name"
                 className="flex"
                 InputProps={{
-                  ...register("full_name", {
-                    required: true,
-                  }),
+                  ...register('full_name', {
+                    required: true
+                  })
                 }}
                 isError={errors && errors.full_name ? true : false}
                 errors={errors.full_name}
@@ -79,13 +82,13 @@ const SignupPage = () => {
                 label="Email"
                 type="email"
                 InputProps={{
-                  ...register("email", {
+                  ...register('email', {
                     required: true,
                     pattern: {
                       value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i,
-                      message: "Invalid email address",
-                    },
-                  }),
+                      message: 'Invalid email address'
+                    }
+                  })
                 }}
                 isError={errors && errors.email ? true : false}
                 errors={errors.email}
@@ -96,24 +99,21 @@ const SignupPage = () => {
               <InputField
                 name="password"
                 label="Password"
-                type={isPassword == true ? "password" : "text"}
+                type={isPassword == true ? 'password' : 'text'}
                 InputProps={{
                   endAdornment: (
                     <InputAdornment position="start" className="cursor-pointer">
                       {isPassword == false ? (
                         <FaEye onClick={() => setIsPassword((_prev) => true)} />
                       ) : (
-                        <FaEyeSlash
-                          onClick={() => setIsPassword((_prev) => false)}
-                        />
+                        <FaEyeSlash onClick={() => setIsPassword((_prev) => false)} />
                       )}
                     </InputAdornment>
                   ),
-                  ...register("password", {
+                  ...register('password', {
                     required: true,
-                    validate: (value) =>
-                      value === confirmPassword || "Passwords do not match",
-                  }),
+                    validate: (value) => value === confirmPassword || 'Passwords do not match'
+                  })
                 }}
                 isError={errors && errors.password ? true : false}
                 errors={errors.password}
@@ -124,26 +124,21 @@ const SignupPage = () => {
               <InputField
                 name="confirm_password"
                 label="Confirm Password"
-                type={isConfirmPassword == true ? "password" : "text"}
+                type={isConfirmPassword == true ? 'password' : 'text'}
                 InputProps={{
                   endAdornment: (
                     <InputAdornment position="start" className="cursor-pointer">
                       {isConfirmPassword == false ? (
-                        <FaEye
-                          onClick={() => setIsConfirmPassword((_prev) => true)}
-                        />
+                        <FaEye onClick={() => setIsConfirmPassword((_prev) => true)} />
                       ) : (
-                        <FaEyeSlash
-                          onClick={() => setIsConfirmPassword((_prev) => false)}
-                        />
+                        <FaEyeSlash onClick={() => setIsConfirmPassword((_prev) => false)} />
                       )}
                     </InputAdornment>
                   ),
-                  ...register("confirm_password", {
+                  ...register('confirm_password', {
                     required: true,
-                    validate: (value) =>
-                      value === password || "Passwords do not match",
-                  }),
+                    validate: (value) => value === password || 'Passwords do not match'
+                  })
                 }}
                 isError={errors && errors.confirm_password ? true : false}
                 errors={errors.confirm_password}
@@ -151,12 +146,7 @@ const SignupPage = () => {
             </div>
 
             <div className="pt-4 w-full">
-              <LoadingButton
-                loading={isLoading}
-                variant="contained"
-                className="btn bg-primary w-full"
-                type="submit"
-              >
+              <LoadingButton loading={isLoading} variant="contained" className="btn bg-primary w-full" type="submit">
                 Create Account
               </LoadingButton>
             </div>
