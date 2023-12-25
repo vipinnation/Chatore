@@ -6,8 +6,7 @@ const saveUser = (body: any) => {
         try {
             let hashedPassword = await encryptPassword(body.password);
             let user = new User({
-                firstName: body.firstName,
-                lastName: body.lastName,
+                full_name: body.full_name,
                 email: body.email,
                 password: hashedPassword,
             });

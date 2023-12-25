@@ -17,6 +17,7 @@ const connection = mongoose
     Logger.success(`Mongodb connected successfully to host ${result.connection.host}`);
   })
   .catch((err) => {
+    console.log("URL :-- ", url)
     Logger.error(`Database not connected  \n ${err}`);
   });
 

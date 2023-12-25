@@ -10,7 +10,7 @@ services:
 
   node_app:
     image: node:18-alpine
-    container_name: graphical
+    container_name: chatore-backend
     working_dir: /app
     ports:
       - '5000:5000' # Expose the Node.js app port
@@ -26,7 +26,7 @@ services:
 
   nginx:
     image: nginx:latest
-    container_name: graphical_nginx
+    container_name: chatore-backend_nginx
     ports:
       - '80:80'
     volumes:

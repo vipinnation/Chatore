@@ -7,8 +7,15 @@ const BodyValidator = (schema: any) => {
         const validationResult = schema.validate(dataToValidate);
 
         if (validationResult.error) {
-            // Validation failed
-            return res.status(400).json({ error: validationResult.error.details[0].message });
+            // Check if all required fields are missing
+            const allFieldsRequiredError = validationResult.error.details.find((detail: any) => detail.type === 'object.missing');
+
+            if (allFieldsRequiredError) {
+                return res.status(400).json({ msg: 'All fields required' });
+            }
+
+            // Handle other validation errors
+            return res.status(400).json({ msg: validationResult.error.details[0].message });
         }
 
         // Validation succeeded, proceed to the next middleware or route handler

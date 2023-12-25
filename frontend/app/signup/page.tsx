@@ -1,5 +1,6 @@
 "use client";
 import InputField from "@/components/forms/input.component";
+import { AuthAPI } from "@/services/api-calls/auth.api-calls";
 import { LoadingButton } from "@mui/lab";
 import { InputAdornment, TextField } from "@mui/material";
 import Image from "next/image";
@@ -23,21 +24,28 @@ const SignupPage = () => {
   const password = watch("password", "");
   const confirmPassword = watch("confirm_password", "");
 
-  const submitHandler = () => {
+  const submitHandler = async (user: any) => {
     try {
-    } catch (error) {}
+      setIsLoading((_prev) => true);
+      let { confirm_password, ...rest } = user;
+      let data = await AuthAPI.registration(rest);
+      setIsLoading((_prev) => false);
+    } catch (error) {
+      console.log(error);
+      setIsLoading((_prev) => false);
+    }
   };
 
   return (
     <div className="w-full flex flex-wrap">
       <div className="w-1/2 shadow-2xl">
-        <Image
+        <img
           className="object-cover w-full h-screen hidden md:block"
           src="https://source.unsplash.com/IXUM4cJynP0"
           alt="SignUp Page"
         />
       </div>
-      <div className="w-full md:w-1/2 flex flex-col pt-12">
+      <div className="w-full md:w-1/2 flex flex-col pt-16 sm:pt-12 ">
         <div className="flex flex-col justify-center md:justify-start my-auto pt-8 md:pt-0 px-8 md:px-24 lg:px-32">
           <p className="text-center text-3xl">
             Create you account and start chatting.

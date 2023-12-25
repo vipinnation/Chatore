@@ -25,13 +25,13 @@ const ForgotPasswordPage = () => {
   return (
     <div className="w-full flex flex-wrap">
       <div className="w-1/2 shadow-2xl">
-        <Image
+        <img
           alt="forgotpassword"
           className="object-cover w-full h-screen hidden md:block"
           src="https://source.unsplash.com/IXUM4cJynP0"
         />
       </div>
-      <div className="w-full md:w-1/2 flex flex-col">
+      <div className="w-full md:w-1/2 flex flex-col pt-20 sm:pt-0">
         <div className="flex flex-col justify-center md:justify-start my-auto pt-8 md:pt-0 px-8 md:px-24 lg:px-32">
           <p className="text-center text-3xl">Opps!, Don&apos;t worry</p>
           <span className="text-center">

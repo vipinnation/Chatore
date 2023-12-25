@@ -5,8 +5,6 @@ import morgan from "morgan"
 import path from "path"
 import http from 'http'
 import Logger from './library/logger';
-import ActivityTracker from './app/middleware/activity-tracker';
-import UnderMaintenanceValidator from './app/middleware/maintenance-mode';
 import routes from './routes';
 import redis from './redis/_init.redis';
 import db from './db';
@@ -23,12 +21,6 @@ app.use(morgan('dev'));
 
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
-
-// Middleware to track user details over api calls
-app.use(ActivityTracker);
-
-// Middleware to check is server on maintenance
-app.use(UnderMaintenanceValidator)
 
 
 app.get('/', (req: Request, res: Response) => {

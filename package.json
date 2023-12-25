@@ -1,13 +1,13 @@
 {
-  "name": "graphical",
+  "name": "chatore-backend",
   "version": "1.0.0",
   "description": "",
   "main": "server.js",
   "scripts": {
     "start": "NODE_ENV=DEV node build/bundle.server.js",
     "build": "rm -rf build && npx webpack",
-    "dev": "concurrently \"npx tsc -w\" \"nodemon dist/server.js\"",
-    "build:dev": "rm -rf dist && rm -rf build && npx tsc && npm run move-files",
+    "dev": "concurrently \"npx tsc -w\" \"nodemon --legacy-watch dist/server.js\"",
+    "build:dev": "rm -rf dist && rm -rf build && npx tsc",
     "test": "jest --watch",
     "lint": "eslint --fix --ext .ts",
     "move-files": "sh files.sh",
