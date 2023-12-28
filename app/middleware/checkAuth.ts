@@ -17,12 +17,12 @@ const checkAuth = async (req: any, res: Response, next: NextFunction) => {
 
   try {
     /** if TOKEN is valid then verify token and user */
-    const redisKey: any = await RedisClient.get(token);
+    // const redisKey: any = await RedisClient.get(token);
 
-    if (!redisKey) {
-      return next(res.status(403).json({ msg: 'Session expired' }));
-    }
-    const decoded: any = jwt.verify(redisKey, config.jwt.JWT_SECRET);
+    // if (!redisKey) {
+    //   return next(res.status(403).json({ msg: 'Session expired' }));
+    // }
+    const decoded: any = jwt.verify(token, config.jwt.JWT_SECRET);
     const user = await User.findById(decoded.id);
 
     if (!user) {
