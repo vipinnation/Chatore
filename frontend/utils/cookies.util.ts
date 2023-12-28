@@ -9,8 +9,11 @@ const encryptData = (data: string) => {
 };
 
 // Decrypt data using the same XOR operation
-const decryptData = (encryptedData: string): string => {
-  return encryptData(encryptedData);
+const decryptData = (encryptedData: string) => {
+  try {
+    const encrypted = CryptoJS.AES.decrypt(encryptedData, ENCRYPTION_KEY).toString();
+    return encrypted;
+  } catch (error) {}
 };
 
 const saveCookies = (key: string, value: string) => {
@@ -21,7 +24,7 @@ const saveCookies = (key: string, value: string) => {
       expirationDate.setTime(expirationDate.getTime() + 1 * 60 * 60 * 1000);
       const domain = window.location.hostname;
       document.cookie = `${key}=${encodeURIComponent(
-        encryptedValue
+        encryptedValue as any
       )}; expires=${expirationDate.toUTCString()}; path=/; domain=${domain}`;
       resolve(true);
     } catch (error) {

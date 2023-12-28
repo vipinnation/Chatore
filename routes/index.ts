@@ -1,5 +1,6 @@
 import express, { Request, Response } from 'express';
 import { authRoutes } from './auth.routes';
+import { chatRoutes } from './chat.routes';
 
 const routes = express.Router();
 
@@ -12,6 +13,7 @@ routes.get('/', (req: Request, res: Response) => {
 });
 
 routes.use("/auth", authRoutes)
+routes.use("/chats", chatRoutes)
 
 
 export = routes;

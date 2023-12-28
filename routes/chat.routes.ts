@@ -9,4 +9,6 @@ routes.post("/personal-chats", checkAuth, ChatController.fetchPersonalChats);
 
 routes.post("/create-group", checkAuth, GroupChatController.createGroup);
 routes.put("/rename-group/:id", checkAuth, GroupChatController.renameGroup);
+
+
 export const chatRoutes = routes;
