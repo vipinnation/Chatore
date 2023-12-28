@@ -5,65 +5,147 @@ import { ServerResponse } from "../../library/server-response";
 import Logger from "../../library/logger";
 
 // Get All Group and Personal Chat
-const fetchChats = async (req: Request, res: Response) => {
+const fetchChats = async (req: Request, res: Response): Promise<void> => {
     try {
         let { user }: any = req;
-        let chat = await Chat.find({
-            $or: [
-                { members: { $elemMatch: { $eq: user._id } } },
-                { admin: { $elemMatch: { $eq: user._id } } },
-            ],
-        })
-            .populate("members")
-            .populate("admin")
-            .populate("messages")
-            .sort({ updatedAt: -1 });
+        const chat = await Chat.aggregate([
+            {
+                $match: {
+                    $or: [
+                        { "members": user._id },
+                        { "admin": user._id },
+                    ],
+                },
+            },
+            {
+                $lookup: {
+                    from: "users", // Replace with the actual name of the users collection
+                    localField: "members",
+                    foreignField: "_id",
+                    as: "members",
+                },
+            },
+            {
+                $lookup: {
+                    from: "users", // Replace with the actual name of the users collection
+                    localField: "admin",
+                    foreignField: "_id",
+                    as: "admin",
+                },
+            },
+            {
+                $lookup: {
+                    from: "messages", // Replace with the actual name of the messages collection
+                    localField: "messages",
+                    foreignField: "_id",
+                    as: "messages",
+                },
+            },
+            {
+                $sort: { updatedAt: -1 },
+            },
+        ]);
 
-        ServerResponse.server_ok(res, { chat: chat });
+        ServerResponse.server_ok(res, { chat });
     } catch (error) {
         Logger.error(error);
-        ServerResponse.server_error(res, error);
+        ServerResponse.server_error(res, "Internal Server Error");
     }
 };
 
-const fetchPersonalChats = async (req: Request, res: Response) => {
+
+const fetchPersonalChats = async (req: Request, res: Response): Promise<void> => {
     try {
-        let { user_id } = req.body;
-        if (!user_id) return ServerResponse.bad_request(res, { msg: "Please enter user" });
-        let { user }: any = req;
+        const { user_id } = req.body;
 
-        let searchUser = await User.findById(user_id);
-        if (!searchUser) return ServerResponse.bad_request(res, { msg: "User not found " });
+        if (!user_id) {
+            return ServerResponse.bad_request(res, { msg: "Please enter user" });
+        }
 
-        let chat = await Chat.find({
-            isGroupChat: false,
-            $and: [
-                { members: { $elemMatch: { $eq: user._id } } },
-                { members: { $elemMatch: { $eq: user_id } } },
-            ],
-        })
-            .populate("members")
-            .populate("message")
-            .sort({ updatedAt: -1 });
+        const { user }: any = req;
 
-        if (chat.length > 0) return ServerResponse.server_ok(res, { chat });
+        const searchUser = await User.findById(user_id);
+
+        if (!searchUser) {
+            return ServerResponse.bad_request(res, { msg: "User not found" });
+        }
+
+        const chat = await Chat.aggregate([
+            {
+                $match: {
+                    isGroupChat: false,
+                    members: {
+                        $all: [user._id, user_id],
+                    },
+                },
+            },
+            {
+                $lookup: {
+                    from: "users", // Replace with the actual name of the users collection
+                    localField: "members",
+                    foreignField: "_id",
+                    as: "members",
+                },
+            },
+            {
+                $lookup: {
+                    from: "messages", // Replace with the actual name of the messages collection
+                    localField: "message",
+                    foreignField: "_id",
+                    as: "messages",
+                },
+            },
+            {
+                $sort: { updatedAt: -1 },
+            },
+        ]);
+
+        if (chat.length > 0) {
+            return ServerResponse.server_ok(res, { chat });
+        }
 
         const createChat = await new Chat({
             name: `${user._id}----${user_id}`,
             isGroupChat: false,
             members: [user._id, user_id],
         });
-        let createdChat = await createChat.save();
-        let updatedChat = await Chat.find({ _id: createdChat })
-            .populate("members")
-            .populate("message")
-            .sort({ updatedAt: -1 });
+
+        const createdChat = await createChat.save();
+
+        const updatedChat = await Chat.aggregate([
+            {
+                $match: {
+                    _id: createdChat._id,
+                },
+            },
+            {
+                $lookup: {
+                    from: "users", // Replace with the actual name of the users collection
+                    localField: "members",
+                    foreignField: "_id",
+                    as: "members",
+                },
+            },
+            {
+                $lookup: {
+                    from: "messages", // Replace with the actual name of the messages collection
+                    localField: "message",
+                    foreignField: "_id",
+                    as: "messages",
+                },
+            },
+            {
+                $sort: { updatedAt: -1 },
+            },
+        ]);
+
         ServerResponse.server_ok(res, { chat: updatedChat });
     } catch (error) {
         Logger.error(error);
         ServerResponse.server_error(res, error);
     }
 };
+
 
 
 export const ChatController = { fetchChats, fetchPersonalChats }
