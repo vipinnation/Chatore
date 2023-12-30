@@ -1,5 +1,7 @@
-"use client";
-import { LoadingButton } from "@mui/lab";
+'use client';
+import { ChatAPI } from '@/services/api-calls/chats.api-calls';
+import { UserAPI } from '@/services/api-calls/user.api-calls';
+import { LoadingButton } from '@mui/lab';
 import {
   Avatar,
   Box,
@@ -10,18 +12,46 @@ import {
   ListItemText,
   TextField,
   ToggleButton,
-  ToggleButtonGroup,
-} from "@mui/material";
-import React, { useState } from "react";
-import { BsPlusCircleFill } from "react-icons/bs";
-import { FaUser } from "react-icons/fa";
+  ToggleButtonGroup
+} from '@mui/material';
+import React, { useState } from 'react';
+import { BsPlusCircleFill } from 'react-icons/bs';
+import { FaUser } from 'react-icons/fa';
+import InputField from '../forms/input.component';
 
-type Props = {};
+type Props = {
+  loadNewChat: any;
+};
 
-const CreateChat: React.FC<Props> = (props: Props) => {
+const CreateChat: React.FC<Props> = ({ loadNewChat }) => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [isGroupChat, setIsGroupChat] = useState<boolean>(false);
   const [users, setUsers] = useState<Array<any>>([]);
+
+  const searchUser = async (e: any) => {
+    try {
+      if (e.target.value && e.target.value.trim().length > 0) {
+        let data = await UserAPI.searchUser(e.target.value.trim());
+        setUsers((_prev) => data);
+      } else {
+        setUsers((_prev) => []);
+      }
+    } catch (error) {}
+  };
+
+  const proceesUserEvent = async (user: any) => {
+    try {
+      if (isGroupChat == false) {
+        // start personal chat
+        let res = await ChatAPI.fetchPersonalChat(user);
+        setIsOpen((_prev) => false);
+        loadNewChat(res);
+        console.log(res);
+      } else {
+        // add person to group
+      }
+    } catch (error) {}
+  };
 
   return (
     <div>
@@ -34,7 +64,7 @@ const CreateChat: React.FC<Props> = (props: Props) => {
       />
 
       <Drawer
-        anchor={"left"}
+        anchor={'left'}
         open={isOpen}
         onClose={(e) => {
           setIsOpen(false);
@@ -42,18 +72,11 @@ const CreateChat: React.FC<Props> = (props: Props) => {
       >
         <Box sx={{ width: 300 }} role="presentation">
           <div className="">
-            <div className="flex items-center justify-center bg-gray-100 shadow-xl py-3">
-              Start a chat
-            </div>
+            <div className="flex items-center justify-center bg-gray-100 shadow-xl py-3">Start a chat</div>
           </div>
           <>
             <div className="pt-4 mx-4">
-              <ToggleButtonGroup
-                color="primary"
-                value={"web"}
-                exclusive
-                aria-label="Platform"
-              >
+              <ToggleButtonGroup color="primary" value={'web'} exclusive aria-label="Platform">
                 <ToggleButton
                   value="single_chat"
                   className="px-4"
@@ -83,17 +106,13 @@ const CreateChat: React.FC<Props> = (props: Props) => {
                 label="Group name"
                 variant="standard"
                 required={true}
-                helperText={"Group name is required"}
+                helperText={'Group name is required'}
               />
             </div>
           ) : null}
 
           <div className="mx-4 mt-1">
-            <TextField
-              id="standard-basic"
-              label="Username"
-              variant="standard"
-            />
+            <InputField label="Username" name="username" type="text" onChange={searchUser} />
           </div>
 
           {isGroupChat == true ? (
@@ -111,27 +130,23 @@ const CreateChat: React.FC<Props> = (props: Props) => {
 
           <List
             sx={{
-              width: "100%",
+              width: '100%',
               maxWidth: 360,
-              bgcolor: "background.paper",
+              bgcolor: 'background.paper'
             }}
           >
             {users.length ? (
               <>
                 {users.map((user: any) => {
                   return (
-                    <ListItem className="hover:bg-gray-100" key={user._id}>
+                    <ListItem className="hover:bg-gray-100" key={user._id} onClick={(e) => proceesUserEvent(user)}>
                       <ListItemAvatar>
                         <Avatar>
                           <FaUser />
                         </Avatar>
                       </ListItemAvatar>
                       <ListItemText
-                        primary={
-                          <span className="capitalize">
-                            {user.firstName} {user.lastName}
-                          </span>
-                        }
+                        primary={<span className="capitalize">{user.full_name}</span>}
                         secondary="Jan 9, 2014"
                         className="cursor-pointer"
                       />
@@ -139,9 +154,7 @@ const CreateChat: React.FC<Props> = (props: Props) => {
                   );
                 })}
               </>
-            ) : (
-              <></>
-            )}
+            ) : null}
           </List>
         </Box>
       </Drawer>

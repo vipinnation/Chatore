@@ -4,6 +4,7 @@ import './globals.css';
 import { ThemeProvider } from '@mui/material/styles';
 import theme from '@/utils/theme';
 import { SnackbarProvider } from '@/components/alert/alert.context';
+import AuthContextProvider from '@/middleware/check-auth.middleware';
 
 export const metadata: Metadata = {
   title: 'Chatore',
@@ -16,8 +17,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body className={` h-screen`}>
         <ThemeProvider theme={theme}>
           <SnackbarProvider>
-            <Navbar />
-            {children}
+            <AuthContextProvider>
+              <Navbar />
+              {children}
+            </AuthContextProvider>
           </SnackbarProvider>
         </ThemeProvider>
       </body>

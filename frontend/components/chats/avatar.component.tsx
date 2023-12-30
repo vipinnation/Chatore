@@ -1,7 +1,7 @@
 import { Avatar, Badge, styled } from '@mui/material';
 import React from 'react';
 
-type Props = { name: string; className?: string };
+type Props = { name: string; className?: string; onClick?: any };
 
 const StyledBadge = styled(Badge)(({ theme }) => ({
   '& .MuiBadge-badge': {
@@ -32,10 +32,10 @@ const StyledBadge = styled(Badge)(({ theme }) => ({
   }
 }));
 
-const AvatarComponent: React.FC<Props> = ({ name, className }) => {
+const AvatarComponent: React.FC<Props> = ({ name, className, onClick }) => {
   return (
     <>
-      <span className={`flex items-center pt-3 sm:pt-0 `}>
+      <span className={`flex items-center pt-3 sm:pt-0 ${className}`} onClick={onClick}>
         <StyledBadge overlap="circular" anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }} variant="dot">
           <Avatar src="/static/images/avatar/1.jpg" />
         </StyledBadge>

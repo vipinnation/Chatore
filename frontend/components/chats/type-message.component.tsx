@@ -1,8 +1,26 @@
-import React from 'react';
+import { MessageAPI } from '@/services/api-calls/message.api-calls';
+import React, { useState } from 'react';
 import { IoIosSend } from 'react-icons/io';
-type Props = {};
+import { FaCircleNotch } from 'react-icons/fa';
 
-const TypeMessage = (props: Props) => {
+type Props = {
+  chat_id: string;
+};
+
+const TypeMessage: React.FC<Props> = ({ chat_id }) => {
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [message, setMessage] = useState<string>('');
+
+  const postMessage = async () => {
+    try {
+      setIsLoading((_prev) => true);
+      let data = await MessageAPI.sendMessage(chat_id, message);
+      setIsLoading((_prev) => false);
+    } catch (error) {
+      setIsLoading((_prev) => false);
+    }
+  };
+
   return (
     <>
       <div className="my-6"></div>
@@ -33,6 +51,12 @@ const TypeMessage = (props: Props) => {
             <input
               type="text"
               className="flex w-full border rounded-xl focus:outline-none focus:border-indigo-300 pl-4 h-10"
+              value={message}
+              placeholder="Type your message here"
+              onChange={(e) => {
+                setMessage((_prev) => e.target.value);
+              }}
+              disabled={isLoading}
             />
             <button className="absolute flex items-center justify-center h-full w-12 right-0 top-0 text-gray-400 hover:text-gray-600">
               <svg
@@ -53,10 +77,22 @@ const TypeMessage = (props: Props) => {
           </div>
         </div>
         <div className="ml-4">
-          <button className="flex items-center bg-indigo-500 hover:bg-indigo-600 rounded-xl text-white p-2 flex-shrink-0">
-            <span className="">
-              <IoIosSend className="text-3xl" />
-            </span>
+          <button
+            className="flex items-center bg-indigo-500 hover:bg-indigo-600 rounded-xl text-white p-2 flex-shrink-0"
+            onClick={postMessage}
+            disabled={isLoading}
+          >
+            {isLoading == true ? (
+              <>
+                <span className="text-white animate-spin">
+                  <FaCircleNotch />
+                </span>
+              </>
+            ) : (
+              <span>
+                <IoIosSend className="text-3xl" />
+              </span>
+            )}
           </button>
         </div>
       </div>

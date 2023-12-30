@@ -11,8 +11,8 @@ const encryptData = (data: string) => {
 // Decrypt data using the same XOR operation
 const decryptData = (encryptedData: string) => {
   try {
-    const encrypted = CryptoJS.AES.decrypt(encryptedData, ENCRYPTION_KEY).toString();
-    return encrypted;
+    const decrypted = CryptoJS.AES.decrypt(encryptedData, ENCRYPTION_KEY).toString(CryptoJS.enc.Utf8);
+    return decrypted;
   } catch (error) {}
 };
 
@@ -33,13 +33,31 @@ const saveCookies = (key: string, value: string) => {
   });
 };
 
-const getCookie = (key: string): string | undefined => {
+const getCookie = (key: string) => {
+  return new Promise<string | undefined | null>(async (resolve, reject) => {
+    try {
+      const cookies = document.cookie.split(';').map((cookie) => cookie.trim());
+      const cookie = cookies.find((c) => c.startsWith(`${key}=`));
+      if (cookie) {
+        const encryptedValue = cookie.split('=')[1];
+        let decryptedData = decryptData(decodeURIComponent(encryptedValue));
+        resolve(decryptedData);
+      }
+      resolve(null);
+    } catch (error) {
+      console.log(error);
+      resolve(null);
+    }
+  });
+};
+
+const getUnencryptedCookies = (key: string): string | undefined => {
   const cookies = document.cookie.split(';').map((cookie) => cookie.trim());
   const cookie = cookies.find((c) => c.startsWith(`${key}=`));
 
   if (cookie) {
     const encryptedValue = cookie.split('=')[1];
-    return decryptData(decodeURIComponent(encryptedValue));
+    return encryptedValue;
   }
 
   return undefined;
@@ -49,4 +67,4 @@ const removeCookie = (key: string): void => {
   document.cookie = `${key}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
 };
 
-export const CookieProvider = { removeCookie, getCookie, saveCookies };
+export const CookieProvider = { removeCookie, getCookie, saveCookies, getUnencryptedCookies, decryptData };

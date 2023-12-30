@@ -11,8 +11,10 @@ import Image from 'next/image';
 import { AuthAPI } from '@/services/api-calls/auth.api-calls';
 import { useSnackbar } from '@/components/alert/alert.context';
 import { CookieProvider } from '@/utils/cookies.util';
+import { useRouter } from 'next/navigation';
 
 const LoginPage = () => {
+  const router = useRouter();
   const { toastMessage } = useSnackbar();
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isPassword, setIsPassword] = useState<boolean>(true);
@@ -25,13 +27,14 @@ const LoginPage = () => {
   const submitHandler = async (data: any) => {
     try {
       setIsLoading((_prev) => true);
-      let res = await AuthAPI.login(data);
+      let res: any = await AuthAPI.login(data);
       await CookieProvider.saveCookies('token', res.token);
+      await CookieProvider.saveCookies('_id', res._id);
       setIsLoading((_prev) => false);
+      router.push('/chats');
     } catch (error) {
       console.log(error);
       toastMessage(error, 'error');
-
       setIsLoading((_prev) => false);
     }
   };

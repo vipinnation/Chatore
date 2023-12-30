@@ -1,5 +1,5 @@
-"use client";
-import React, { useState } from "react";
+'use client';
+import React, { useEffect, useState } from 'react';
 
 type Props = {
   sender: string;
@@ -8,13 +8,12 @@ type Props = {
   user_id?: string;
 };
 
-const ChatMessage: React.FC<Props> = ({
-  sender,
-  message,
-  username,
-  user_id,
-}) => {
-  const [userId, setUserId] = useState<any>("");
+const ChatMessage: React.FC<Props> = ({ sender, message, username, user_id }) => {
+  const [userId, setUserId] = useState<string>('');
+
+  useEffect(() => {
+    setUserId((_prev) => user_id as string);
+  }, []);
   return (
     <>
       {userId == sender ? (
@@ -38,7 +37,7 @@ const ChatMessage: React.FC<Props> = ({
               <div className="col-start-1 col-end-8 p-3 rounded-lg">
                 <div className="flex flex-row items-center">
                   <div className="flex items-center justify-center h-10 w-10 rounded-full bg-indigo-500 flex-shrink-0">
-                    D
+                    {username && username.length > 0 ? username[0] : ''}
                   </div>
                   <div className="relative ml-3 text-sm bg-white py-2 px-4 shadow rounded-xl">
                     <div>{message}</div>

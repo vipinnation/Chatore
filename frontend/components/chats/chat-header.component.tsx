@@ -4,9 +4,11 @@ import { IoCloseSharp } from 'react-icons/io5';
 import React, { useState } from 'react';
 import AvatarComponent from './avatar.component';
 
-type Props = {};
+type Props = {
+  name: string | undefined | null;
+};
 
-const ChatHeader = (props: Props) => {
+const ChatHeader: React.FC<Props> = ({ name }) => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
   return (
     <div className="container w-full">
@@ -17,7 +19,7 @@ const ChatHeader = (props: Props) => {
             setIsOpen((_prev) => true);
           }}
         >
-          <AvatarComponent name={'Name'} />
+          <AvatarComponent name={name as string} />
         </span>
         <Drawer anchor={'right'} open={isOpen} onClose={() => setIsOpen((_prev) => false)}>
           <Box

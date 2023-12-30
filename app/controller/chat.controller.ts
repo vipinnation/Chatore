@@ -3,6 +3,7 @@ import Chat from '../model/chat.model'
 import User from '../model/user.model'
 import { ServerResponse } from "../../library/server-response";
 import Logger from "../../library/logger";
+import mongoose from "mongoose";
 
 // Get All Group and Personal Chat
 const fetchChats = async (req: Request, res: Response): Promise<void> => {
@@ -12,8 +13,8 @@ const fetchChats = async (req: Request, res: Response): Promise<void> => {
             {
                 $match: {
                     $or: [
-                        { "members": user._id },
-                        { "admin": user._id },
+                        { "members": new mongoose.Types.ObjectId(user._id) },
+                        { "admin": new mongoose.Types.ObjectId(user._id) },
                     ],
                 },
             },
@@ -75,13 +76,13 @@ const fetchPersonalChats = async (req: Request, res: Response): Promise<void> =>
                 $match: {
                     isGroupChat: false,
                     members: {
-                        $all: [user._id, user_id],
+                        $all: [new mongoose.Types.ObjectId(user._id), new mongoose.Types.ObjectId(user_id)],
                     },
                 },
             },
             {
                 $lookup: {
-                    from: "users", // Replace with the actual name of the users collection
+                    from: "users",
                     localField: "members",
                     foreignField: "_id",
                     as: "members",
@@ -89,7 +90,7 @@ const fetchPersonalChats = async (req: Request, res: Response): Promise<void> =>
             },
             {
                 $lookup: {
-                    from: "messages", // Replace with the actual name of the messages collection
+                    from: "messages",
                     localField: "message",
                     foreignField: "_id",
                     as: "messages",
@@ -101,7 +102,7 @@ const fetchPersonalChats = async (req: Request, res: Response): Promise<void> =>
         ]);
 
         if (chat.length > 0) {
-            return ServerResponse.server_ok(res, { chat });
+            return ServerResponse.server_ok(res, { chat: chat[0] });
         }
 
         const createChat = await new Chat({
@@ -139,7 +140,7 @@ const fetchPersonalChats = async (req: Request, res: Response): Promise<void> =>
             },
         ]);
 
-        ServerResponse.server_ok(res, { chat: updatedChat });
+        ServerResponse.server_ok(res, { chat: updatedChat[0] });
     } catch (error) {
         Logger.error(error);
         ServerResponse.server_error(res, error);

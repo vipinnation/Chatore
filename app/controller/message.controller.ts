@@ -35,4 +35,4 @@ const sendMessage = async (req: Request, res: Response) => {
     }
 };
 
-export { sendMessage };
+export const MessageController = { sendMessage };

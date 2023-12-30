@@ -26,4 +26,60 @@ const saveUser = (body: any) => {
 };
 
 
-export const UserDao = { saveUser }
+
+const getUsers = (args: any) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            let users = await User.find(args);
+            resolve(users);
+        } catch (error) {
+            reject(error);
+        }
+    });
+};
+
+const updateUser = (_id: any, body: any) => {
+    return new Promise<any>(async (resolve, reject) => {
+        try {
+            await findUserById(_id);
+            let user = await User.findByIdAndUpdate(_id, body);
+            resolve({ msg: "User updated successfully", user });
+        } catch (error: any) {
+            if (error.code == "11000") {
+                reject("User is already registered with this email");
+            } else {
+                reject(error);
+            }
+        }
+    });
+};
+
+const removeUser = (_id: any) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            await findUserById(_id);
+            let user = await User.findByIdAndDelete(_id);
+            resolve({ msg: "User deleted successfully", user });
+        } catch (error) {
+            reject(error);
+        }
+    });
+};
+
+const findUserById = (_id: any) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            let user = await User.findById(_id);
+            if (user) {
+                resolve(user);
+            } else {
+                reject({ msg: "User not found" });
+            }
+        } catch (error: any) {
+            reject(error);
+        }
+    });
+};
+
+
+export const UserDao = { saveUser, getUsers, updateUser, removeUser };
