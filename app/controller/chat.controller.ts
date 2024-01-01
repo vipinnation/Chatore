@@ -9,6 +9,7 @@ import mongoose from "mongoose";
 const fetchChats = async (req: Request, res: Response): Promise<void> => {
     try {
         let { user }: any = req;
+
         const chat = await Chat.aggregate([
             {
                 $match: {
@@ -16,36 +17,80 @@ const fetchChats = async (req: Request, res: Response): Promise<void> => {
                         { "members": new mongoose.Types.ObjectId(user._id) },
                         { "admin": new mongoose.Types.ObjectId(user._id) },
                     ],
-                },
+                }
             },
             {
                 $lookup: {
-                    from: "users", // Replace with the actual name of the users collection
+                    from: "users",
                     localField: "members",
                     foreignField: "_id",
-                    as: "members",
-                },
+                    as: "members"
+                }
             },
             {
                 $lookup: {
-                    from: "users", // Replace with the actual name of the users collection
+                    from: "users",
                     localField: "admin",
                     foreignField: "_id",
-                    as: "admin",
-                },
+                    as: "admin"
+                }
             },
             {
                 $lookup: {
-                    from: "messages", // Replace with the actual name of the messages collection
+                    from: "messages",
                     localField: "messages",
                     foreignField: "_id",
-                    as: "messages",
+                    as: "messages"
+                }
+            },
+            {
+                $unwind: {
+                    path: "$messages",
+                    preserveNullAndEmptyArrays: true,
+                },
+            },
+            {
+                $sort: { "messages.createdAt": 1 },
+            },
+            {
+                $group: {
+                    _id: "$_id",
+                    name: { $first: "$name" }, // Include the name field
+                    isGroupChat: { $first: "$isGroupChat" }, // Include the isGroupChat field
+                    members: { $addToSet: "$members" },
+                    admin: { $addToSet: "$admin" },
+                    messages: { $push: "$messages" },
+                    updatedAt: { $first: "$updatedAt" },
+                },
+            },
+            {
+                $unwind: {
+                    path: "$members",
+                    preserveNullAndEmptyArrays: true,
+                },
+            },
+            {
+                $unwind: {
+                    path: "$admin",
+                    preserveNullAndEmptyArrays: true,
+                },
+            },
+            {
+                $project: {
+                    _id: 1,
+                    name: 1,
+                    isGroupChat: 1,
+                    members: 1,
+                    admin: 1,
+                    messages: 1,
+                    updatedAt: 1,
                 },
             },
             {
                 $sort: { updatedAt: -1 },
             },
-        ]);
+
+        ])
 
         ServerResponse.server_ok(res, { chat });
     } catch (error) {

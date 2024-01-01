@@ -1,11 +1,11 @@
 import jwt from 'jsonwebtoken';
-import { Response, NextFunction } from 'express';
+import { Request, Response, NextFunction } from 'express';
 import { config } from '../../config/config';
 import { RedisClient } from '../../redis/_init.redis';
 import Logger from '../../library/logger';
 import User from '../model/user.model'
 
-const checkAuth = async (req: any, res: Response, next: NextFunction) => {
+const checkAuth = async (req: Request, res: Response, next: NextFunction) => {
   let token;
   if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
     token = req.headers.authorization.split(' ')[1];

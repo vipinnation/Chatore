@@ -7,8 +7,23 @@ import http from 'http'
 import Logger from './library/logger';
 import routes from './routes';
 import redis from './redis/_init.redis';
+import { Server, Socket } from 'socket.io';
 import db from './db';
+import initializeSocketIO from './socket/init_socket';
 dotenv.config();
+
+declare global {
+    namespace Express {
+        interface Request {
+            user: any
+        }
+    }
+    namespace Socket {
+        interface Socket {
+            user: any
+        }
+    }
+}
 
 
 const app: Express = express();
@@ -32,6 +47,8 @@ app.use('/api/v1', routes);
 
 const port = process.env.PORT || 5000;
 export const server = http.createServer(app);
+const io = initializeSocketIO(server);
+
 
 server.listen(port, () => {
     Logger.info(`⚡️ Server is running at http://localhost:${port}`);

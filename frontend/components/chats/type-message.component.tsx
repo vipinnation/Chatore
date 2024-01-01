@@ -1,20 +1,29 @@
 import { MessageAPI } from '@/services/api-calls/message.api-calls';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { IoIosSend } from 'react-icons/io';
 import { FaCircleNotch } from 'react-icons/fa';
+import SocketManager from '@/services/api-calls/socket.service';
 
 type Props = {
   chat_id: string;
+  sendMessage: any;
 };
 
-const TypeMessage: React.FC<Props> = ({ chat_id }) => {
+const TypeMessage: React.FC<Props> = ({ chat_id, sendMessage }) => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [message, setMessage] = useState<string>('');
+
+  useEffect(() => {
+    return () => {
+      setMessage('');
+    };
+  }, [chat_id]);
 
   const postMessage = async () => {
     try {
       setIsLoading((_prev) => true);
-      let data = await MessageAPI.sendMessage(chat_id, message);
+      sendMessage(message);
+      setMessage('');
       setIsLoading((_prev) => false);
     } catch (error) {
       setIsLoading((_prev) => false);

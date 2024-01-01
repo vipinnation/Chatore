@@ -3,14 +3,13 @@ import ChattingArea from '@/components/chats/chatting-area.component';
 import CreateChat from '@/components/chats/create-chats.component';
 import React, { useEffect, useState } from 'react';
 import { IoMdClose } from 'react-icons/io';
-import { GiHamburgerMenu } from 'react-icons/gi';
 import { ChatAPI } from '@/services/api-calls/chats.api-calls';
 import AvatarComponent from '@/components/chats/avatar.component';
-import { useAuth } from '@/middleware/check-auth.middleware';
 import { CookieProvider } from '@/utils/cookies.util';
-type Props = {};
+import SocketManager from '@/services/api-calls/socket.service';
 
-const ChatsPage = (props: Props) => {
+const ChatsPage = () => {
+  const socketManager = new SocketManager();
   const [chats, setChats] = useState<Array<any>>([]);
   const [isActiveConversation, setIsActiveConversation] = useState(true);
   const [currentSelectedChat, setCurrentSelectedChat] = useState({});
@@ -73,7 +72,7 @@ const ChatsPage = (props: Props) => {
                 </div>
               </div>
 
-              <div className="flex flex-col space-y-1 mt-4 -mx-2  overflow-y-auto sm:h-[80vh]">
+              <div className="flex flex-col space-y-1 mt-4 -mx-2 h-[31rem] overflow-y-auto sm:h-[80vh]">
                 {chats &&
                   chats.map((chat: any) => {
                     return chat?.isGroupChat == false ? (
@@ -87,6 +86,7 @@ const ChatsPage = (props: Props) => {
                                   className="hover:bg-gray-500"
                                   onClick={() => {
                                     setCurrentSelectedChat((_prev) => chat);
+                                    setIsActiveConversation(false);
                                   }}
                                 />
                               </span>
@@ -100,6 +100,7 @@ const ChatsPage = (props: Props) => {
                           name={chat.name}
                           onClick={() => {
                             setCurrentSelectedChat((_prev) => chat);
+                            setIsActiveConversation(false);
                           }}
                         />
                       </button>

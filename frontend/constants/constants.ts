@@ -1,3 +1,5 @@
-const BASE_URL = 'http://localhost:5000/api/v1';
+const HOST = 'http://localhost:5000';
 
-export { BASE_URL };
+const BASE_URL = `${HOST}/api/v1`;
+
+export { BASE_URL, HOST };
