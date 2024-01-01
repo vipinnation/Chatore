@@ -12,6 +12,9 @@ const API = {
   },
   message: {
     saveMessage: '/message'
+  },
+  group: {
+    createGroup: '/group'
   }
 };
 

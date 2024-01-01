@@ -1,5 +1,6 @@
 'use client';
 import { ChatAPI } from '@/services/api-calls/chats.api-calls';
+import { GroupAPI } from '@/services/api-calls/group.api-calls';
 import { UserAPI } from '@/services/api-calls/user.api-calls';
 import { LoadingButton } from '@mui/lab';
 import {
@@ -17,6 +18,7 @@ import {
 import React, { useState } from 'react';
 import { BsPlusCircleFill } from 'react-icons/bs';
 import { FaUser } from 'react-icons/fa';
+import { useSnackbar } from '../alert/alert.context';
 import InputField from '../forms/input.component';
 
 type Props = {
@@ -24,15 +26,25 @@ type Props = {
 };
 
 const CreateChat: React.FC<Props> = ({ loadNewChat }) => {
+  const { toastMessage } = useSnackbar();
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [isGroupChat, setIsGroupChat] = useState<boolean>(false);
   const [users, setUsers] = useState<Array<any>>([]);
+  const [groupUser, setGroupUser] = useState<Array<any>>([]);
+  const [groupName, setGroupName] = useState<string>('');
+  const [isUserLoading, setIsUserLoading] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const searchUser = async (e: any) => {
     try {
       if (e.target.value && e.target.value.trim().length > 0) {
         let data = await UserAPI.searchUser(e.target.value.trim());
-        setUsers((_prev) => data);
+        if (isGroupChat == true) {
+          const filteredUsers = data.filter((user) => !groupUser.includes(user._id));
+          setUsers((_prev) => filteredUsers);
+        } else {
+          setUsers((_prev) => data);
+        }
       } else {
         setUsers((_prev) => []);
       }
@@ -42,17 +54,46 @@ const CreateChat: React.FC<Props> = ({ loadNewChat }) => {
   const proceesUserEvent = async (user: any) => {
     try {
       if (isGroupChat == false) {
-        // start personal chat
         let res = await ChatAPI.fetchPersonalChat(user);
         setIsOpen((_prev) => false);
         loadNewChat(res);
-        console.log(res);
+        setUsers((_prev) => []);
       } else {
-        // add person to group
+        setIsUserLoading((_prev) => true);
+        let isUserPresent = groupUser.includes(user._id);
+        if (!isUserPresent) {
+          let otherUsers = await users.filter((user) => ![...groupUser, ...[user._id]].includes(user._id));
+          setGroupUser((_prev) => [..._prev, ...[user._id]]);
+          if (otherUsers.length > 0) await setUsers((_prev) => otherUsers);
+        } else {
+          let otherUsers = await users.filter((user) => !groupUser.includes(user._id));
+          await setUsers((_prev) => otherUsers);
+        }
+        setIsUserLoading((_prev) => false);
       }
-    } catch (error) {}
+    } catch (error) {
+      setIsUserLoading((_prev) => false);
+    }
   };
 
+  const createGroupHandle = async () => {
+    try {
+      if (!groupName || (groupName && groupName.trim().length == 0))
+        return toastMessage('Group Name is required ', 'error');
+      setIsLoading((_prev) => true);
+      let res = await GroupAPI.createGroup(groupName, groupUser);
+      toastMessage(res.msg, 'success');
+      loadNewChat(res.group, true);
+      setIsOpen((_prev) => false);
+      setUsers((_prev) => []);
+      setGroupName('');
+      setGroupUser([]);
+      setIsLoading((_prev) => false);
+    } catch (error) {
+      setIsLoading((_prev) => false);
+      toastMessage(error, 'error');
+    }
+  };
   return (
     <div>
       <BsPlusCircleFill
@@ -100,13 +141,14 @@ const CreateChat: React.FC<Props> = ({ loadNewChat }) => {
           </>
 
           {isGroupChat == true ? (
-            <div className="ml-4 w-full mt-1 mb-1">
-              <TextField
-                id="standard-basic"
-                label="Group name"
-                variant="standard"
-                required={true}
-                helperText={'Group name is required'}
+            <div className="mx-4 my-1">
+              <InputField
+                label="Group Name"
+                name="group-name"
+                type="text"
+                onChange={(e: any) => {
+                  setGroupName(e.target.value);
+                }}
               />
             </div>
           ) : null}
@@ -118,44 +160,51 @@ const CreateChat: React.FC<Props> = ({ loadNewChat }) => {
           {isGroupChat == true ? (
             <div className="flex items-center">
               <LoadingButton
-                loading={false}
+                loading={isLoading}
                 variant="contained"
                 className="btn bg-primary mt-2 w-2/4 ml-10"
                 type="button"
+                onClick={createGroupHandle}
               >
                 Create Group
               </LoadingButton>
             </div>
           ) : null}
 
-          <List
-            sx={{
-              width: '100%',
-              maxWidth: 360,
-              bgcolor: 'background.paper'
-            }}
-          >
-            {users.length ? (
-              <>
-                {users.map((user: any) => {
-                  return (
-                    <ListItem className="hover:bg-gray-100" key={user._id} onClick={(e) => proceesUserEvent(user)}>
-                      <ListItemAvatar>
-                        <Avatar>
-                          <FaUser />
-                        </Avatar>
-                      </ListItemAvatar>
-                      <ListItemText
-                        primary={<span className="capitalize">{user.full_name}</span>}
-                        secondary="Jan 9, 2014"
-                        className="cursor-pointer"
-                      />
-                    </ListItem>
-                  );
-                })}
-              </>
-            ) : null}
-          </List>
+          {isUserLoading == false ? (
+            <List
+              sx={{
+                width: '100%',
+                maxWidth: 360,
+                bgcolor: 'background.paper'
+              }}
+            >
+              {users.length ? (
+                <>
+                  {users.map((user: any) => {
+                    return (
+                      <ListItem
+                        className="hover:bg-gray-100"
+                        key={Math.floor(Math.random() * 1e4)}
+                        onClick={(e) => proceesUserEvent(user)}
+                      >
+                        <ListItemAvatar>
+                          <Avatar>
+                            <FaUser />
+                          </Avatar>
+                        </ListItemAvatar>
+                        <ListItemText
+                          primary={<span className="capitalize">{user.full_name}</span>}
+                          secondary="Jan 9, 2014"
+                          className="cursor-pointer"
+                        />
+                      </ListItem>
+                    );
+                  })}
+                </>
+              ) : null}
+            </List>
+          ) : null}
         </Box>
       </Drawer>
     </div>

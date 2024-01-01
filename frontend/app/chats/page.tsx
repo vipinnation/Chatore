@@ -11,7 +11,6 @@ import { CookieProvider } from '@/utils/cookies.util';
 type Props = {};
 
 const ChatsPage = (props: Props) => {
-  const { isAuthenticated } = useAuth();
   const [chats, setChats] = useState<Array<any>>([]);
   const [isActiveConversation, setIsActiveConversation] = useState(true);
   const [currentSelectedChat, setCurrentSelectedChat] = useState({});
@@ -37,9 +36,12 @@ const ChatsPage = (props: Props) => {
     } catch (error) {}
   };
 
-  const loadNewChat = (chat: any) => {
+  const loadNewChat = (chat: any, isNew: boolean = false) => {
     try {
       setCurrentSelectedChat((_prev) => chat);
+      if (isNew == true) {
+        setChats((_prev) => [...[chat], ..._prev]);
+      }
     } catch (error) {}
   };
 
@@ -71,7 +73,7 @@ const ChatsPage = (props: Props) => {
                 </div>
               </div>
 
-              <div className="flex flex-col space-y-1 mt-4 -mx-2  overflow-y-auto">
+              <div className="flex flex-col space-y-1 mt-4 -mx-2  overflow-y-auto sm:h-[80vh]">
                 {chats &&
                   chats.map((chat: any) => {
                     return chat?.isGroupChat == false ? (

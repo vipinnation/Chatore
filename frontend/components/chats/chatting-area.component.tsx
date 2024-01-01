@@ -32,7 +32,7 @@ const ChattingArea: React.FC<Props> = ({ displayActiveConversation, isActiveConv
         console.log(currentChat);
         setChat_id((_prev) => currentChat._id);
         if (currentChat.isGroupChat == false) {
-          let user = currentChat.members.find((member: any) => member._id != '65897da27e4a17a24e163d02');
+          let user = currentChat.members.find((member: any) => member._id != userId);
           if (user) {
             setUsername(user.full_name);
           }
@@ -59,7 +59,7 @@ const ChattingArea: React.FC<Props> = ({ displayActiveConversation, isActiveConv
                   />
                 ) : null}
               </div>
-              <ChatHeader name={username} />
+              <ChatHeader name={username} chat={currentChat} />
             </div>
           </div>
           <div

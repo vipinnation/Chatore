@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import Chat from '.././model/chat.model'
 import { ServerResponse } from "../../library/server-response";
 import Logger from "../../library/logger";
+import { ChatDAO } from "../dao-layers/chat.dao";
 
 const createGroup = async (req: Request, res: Response) => {
     try {
@@ -17,14 +18,14 @@ const createGroup = async (req: Request, res: Response) => {
         });
 
         let createGroup = await chat.save();
-        let group = 'await fetchChatById(createGroup._id)';
+        let group = await ChatDAO.fetchChatById(createGroup._id);
         ServerResponse.server_ok(res, { msg: "Group created successfully", group });
     } catch (error: any) {
         Logger.error(error);
         if (error.code == "11000") {
             ServerResponse.bad_request(res, { msg: "Group is already present with this name" });
         } else {
-            ServerResponse.server_error(res, error);
+            ServerResponse.server_error(res, { msg: "Error occured while creating group" });
         }
     }
 };

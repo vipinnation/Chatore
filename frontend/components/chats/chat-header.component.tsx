@@ -1,15 +1,24 @@
 'use client';
-import { Drawer, Box } from '@mui/material';
+import { Drawer, Box, Divider } from '@mui/material';
 import { IoCloseSharp } from 'react-icons/io5';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import AvatarComponent from './avatar.component';
+import { LoadingButton } from '@mui/lab';
 
 type Props = {
   name: string | undefined | null;
+  chat: any;
 };
 
-const ChatHeader: React.FC<Props> = ({ name }) => {
+const ChatHeader: React.FC<Props> = ({ name, chat }) => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
+  const [userChat, setUserChat] = useState<any>({});
+
+  useEffect(() => {
+    console.log('Chat ', chat);
+    setUserChat((_prev: any) => chat);
+  }, [chat, name]);
+
   return (
     <div className="container w-full">
       <React.Fragment>
@@ -38,14 +47,34 @@ const ChatHeader: React.FC<Props> = ({ name }) => {
                   className="h-full w-full"
                 />
               </div>
-              <div className="text-sm font-semibold mt-2">Aminos Co.</div>
-              <div className="text-xs text-gray-500">Lead UI/UX Designer</div>
-              <div className="flex flex-row items-center mt-3">
-                <div className="flex flex-col justify-center h-4 w-8 bg-indigo-500 rounded-full">
-                  <div className="h-3 w-3 bg-white rounded-full self-end mr-1"></div>
+              <div className="text-lg capitalize font-semibold mt-2">{name}</div>
+              <div className="text-xs text-gray-500"></div>
+            </div>
+            <div>
+              {userChat && Object.keys(userChat).length > 0 ? (
+                <div className="mx-2">
+                  <span className="py-1 mb-3 font-semibold text-lg">Members</span>
+                  <Divider />
+                  <div className="mt-3">
+                    {userChat.members.length > 0 ? (
+                      <>
+                        {userChat.members.map((item: any) => (
+                          <button className="flex flex-row items-center w-1/5 p-1 rounded-xl px-2 py-1" key={chat.name}>
+                            <AvatarComponent name={item.full_name} />
+                          </button>
+                        ))}
+                      </>
+                    ) : (
+                      <div>
+                        <p className="text-md font-semibold">No Members</p>
+                      </div>
+                    )}
+                    <LoadingButton variant="contained" className="bg-primary w-full my-4">
+                      Add New Member
+                    </LoadingButton>
+                  </div>
                 </div>
-                <div className="leading-none ml-1 text-xs">Active</div>
-              </div>
+              ) : null}
             </div>
           </Box>
         </Drawer>
