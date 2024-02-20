@@ -11,7 +11,6 @@ import {
   ListItem,
   ListItemAvatar,
   ListItemText,
-  TextField,
   ToggleButton,
   ToggleButtonGroup
 } from '@mui/material';
@@ -99,7 +98,7 @@ const CreateChat: React.FC<Props> = ({ loadNewChat }) => {
       <BsPlusCircleFill
         size={20}
         className="hover:text-white"
-        onClick={(e) => {
+        onClick={() => {
           setIsOpen((_prev) => true);
         }}
       />
@@ -107,7 +106,7 @@ const CreateChat: React.FC<Props> = ({ loadNewChat }) => {
       <Drawer
         anchor={'left'}
         open={isOpen}
-        onClose={(e) => {
+        onClose={() => {
           setIsOpen(false);
         }}
       >
@@ -121,7 +120,7 @@ const CreateChat: React.FC<Props> = ({ loadNewChat }) => {
                 <ToggleButton
                   value="single_chat"
                   className="px-4"
-                  onClick={(e) => {
+                  onClick={() => {
                     setIsGroupChat((_prev) => false);
                   }}
                 >

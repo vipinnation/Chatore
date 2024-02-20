@@ -63,7 +63,7 @@ const ChatsPage = () => {
                     <div className="relative left-7 text-white">
                       <IoMdClose
                         className="text-3xl"
-                        onClick={(e) => {
+                        onClick={() => {
                           displayActiveConversation(false);
                         }}
                       />

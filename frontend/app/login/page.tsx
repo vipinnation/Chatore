@@ -7,7 +7,6 @@ import { useForm } from 'react-hook-form';
 import InputField from '@/components/forms/input.component';
 import { FaEye } from 'react-icons/fa';
 import { FaEyeSlash } from 'react-icons/fa6';
-import Image from 'next/image';
 import { AuthAPI } from '@/services/api-calls/auth.api-calls';
 import { useSnackbar } from '@/components/alert/alert.context';
 import { CookieProvider } from '@/utils/cookies.util';
@@ -78,9 +77,9 @@ const LoginPage = () => {
                 endAdornment: (
                   <InputAdornment position="start">
                     {isPassword == false ? (
-                      <FaEye onClick={(e) => setIsPassword((_prev) => true)} />
+                      <FaEye onClick={() => setIsPassword((_prev) => true)} />
                     ) : (
-                      <FaEyeSlash onClick={(e) => setIsPassword((_prev) => false)} />
+                      <FaEyeSlash onClick={() => setIsPassword((_prev) => false)} />
                     )}
                   </InputAdornment>
                 ),

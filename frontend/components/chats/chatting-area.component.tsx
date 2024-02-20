@@ -117,7 +117,7 @@ const ChattingArea: React.FC<Props> = ({ displayActiveConversation, isActiveConv
                 {isActiveConversation == false ? (
                   <GiHamburgerMenu
                     className="text-3xl"
-                    onClick={(e) => {
+                    onClick={() => {
                       displayActiveConversation(true);
                     }}
                   />
